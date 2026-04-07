@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Use — DotMesh: Dots &amp; Boxes Game</title>
+  <meta name="description" content="Terms of Use for DotMesh: Dots & Boxes Game by LegendPrix AI." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0B0B14;
+      --card:     #16161F;
+      --border:   #242434;
+      --cyan:     #4FD8FF;
+      --pink:     #F472B6;
+      --text-pri: #FFFFFF;
+      --text-sec: #8B8FA8;
+      --radius:   14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-pri);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(79,216,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,216,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(79,216,255,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-pink {
+      position: fixed;
+      bottom: -200px;
+      left: -200px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(244,114,182,0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    header {
+      padding: 48px 0 40px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .logo-dot.pink { background: var(--pink); box-shadow: 0 0 10px var(--pink); }
+
+    .app-name {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--cyan);
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .updated {
+      font-size: 13px;
+      color: var(--text-sec);
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+
+    section:hover { border-color: rgba(79,216,255,0.2); }
+
+    h2 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2::before {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 16px;
+      background: var(--cyan);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    p { color: #C4C8DC; margin-bottom: 12px; font-size: 15px; }
+    p:last-child { margin-bottom: 0; }
+
+    ul {
+      color: #C4C8DC;
+      font-size: 15px;
+      padding-left: 0;
+      list-style: none;
+      margin-bottom: 12px;
+    }
+
+    ul:last-child { margin-bottom: 0; }
+
+    ul li {
+      padding: 6px 0 6px 22px;
+      position: relative;
+    }
+
+    ul li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--cyan);
+      font-size: 18px;
+      line-height: 1.4;
+    }
+
+    a { color: var(--cyan); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .highlight {
+      background: rgba(79,216,255,0.05);
+      border: 1px solid rgba(79,216,255,0.2);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: var(--cyan);
+      margin-top: 14px;
+    }
+
+    .warning-box {
+      background: rgba(251,191,36,0.05);
+      border: 1px solid rgba(251,191,36,0.2);
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 14px;
+      color: #FBBF24;
+      margin-top: 14px;
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 48px;
+      font-size: 13px;
+      color: var(--text-sec);
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+    }
+
+    footer a { color: var(--text-sec); }
+    footer a:hover { color: var(--cyan); }
+
+    .footer-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .footer-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+    @media (max-width: 560px) {
+      section { padding: 20px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-pink"></div>
+
+  <div class="wrapper">
+    <header>
+      <div class="logo-row">
+        <div class="logo-dot"></div>
+        <span class="app-name">DotMesh</span>
+        <div class="logo-dot pink"></div>
+      </div>
+      <h1>Terms of Use</h1>
+      <p class="updated">Last updated: April 7, 2026</p>
+    </header>
+
+    <section>
+      <h2>Acceptance of Terms</h2>
+      <p>Welcome to DotMesh: Dots &amp; Boxes Game ("DotMesh", "the App"), developed and operated by LegendPrix AI ("we", "us", or "our"). By downloading, installing, or using DotMesh, you agree to be bound by these Terms of Use. If you do not agree to these terms, do not use the App.</p>
+      <p>We reserve the right to update these Terms at any time. Continued use of the App after changes are posted constitutes your acceptance of the revised Terms.</p>
+    </section>
+
+    <section>
+      <h2>Use of the App</h2>
+      <p>DotMesh is a mobile game available on iOS and Android. You may use the App for personal, non-commercial entertainment purposes only. You agree not to:</p>
+      <ul>
+        <li>Reverse engineer, decompile, or modify any part of the App</li>
+        <li>Use cheats, bots, automation tools, or exploits to gain an unfair advantage</li>
+        <li>Attempt to gain unauthorised access to our servers or other users' data</li>
+        <li>Use the App for any unlawful purpose or in violation of any applicable laws</li>
+        <li>Interfere with or disrupt the integrity of the App or online multiplayer services</li>
+        <li>Reproduce, distribute, or sell any part of the App without our written permission</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>DotMesh Pro — Subscriptions</h2>
+      <p>DotMesh Pro is a premium subscription that unlocks ad-free gameplay, all themes, custom player colours, priority matchmaking, and early access to new features.</p>
+      <ul>
+        <li><strong>Pricing:</strong> $0.99/month or $4.99/year (prices may vary by region).</li>
+        <li><strong>Free Trial:</strong> New subscribers receive a 7-day free trial. You will not be charged until the trial period ends.</li>
+        <li><strong>Auto-Renewal:</strong> Subscriptions automatically renew unless cancelled at least 24 hours before the end of the current billing period.</li>
+        <li><strong>Payment:</strong> Payment will be charged to your Apple ID or Google Play account at confirmation of purchase.</li>
+        <li><strong>Cancellation:</strong> You can manage or cancel your subscription at any time via your device's App Store or Google Play subscription settings. Cancellation takes effect at the end of the current billing period — you retain Pro access until then.</li>
+        <li><strong>Refunds:</strong> Refund requests are handled by Apple or Google in accordance with their respective refund policies.</li>
+      </ul>
+      <div class="warning-box">
+        ⚠️ Cancelling the subscription does not automatically issue a refund. Contact Apple Support or Google Play Support for refund requests.
+      </div>
+    </section>
+
+    <section>
+      <h2>Online Multiplayer</h2>
+      <p>DotMesh offers real-time online multiplayer via room codes. No account or login is required to play online. By using online features, you agree to:</p>
+      <ul>
+        <li>Play fairly and not use any tools to cheat or manipulate match outcomes</li>
+        <li>Not attempt to disrupt or overload our real-time game servers</li>
+        <li>Accept that online features may be unavailable due to server maintenance, outages, or network issues</li>
+      </ul>
+      <p>We reserve the right to suspend access to online features for users found violating these terms.</p>
+    </section>
+
+    <section>
+      <h2>Intellectual Property</h2>
+      <p>All content within DotMesh — including but not limited to graphics, UI design, game logic, sounds, themes, and the DotMesh name and logo — is owned by LegendPrix AI and protected by applicable intellectual property laws.</p>
+      <p>You are granted a limited, non-exclusive, non-transferable licence to use the App for personal entertainment. This licence does not include the right to copy, modify, distribute, sell, or sublicense any part of the App.</p>
+    </section>
+
+    <section>
+      <h2>Disclaimer of Warranties</h2>
+      <p>DotMesh is provided "as is" and "as available" without warranties of any kind, either express or implied. We do not warrant that the App will be uninterrupted, error-free, or free of bugs or viruses. We make no guarantees regarding the availability of online multiplayer features or future updates.</p>
+    </section>
+
+    <section>
+      <h2>Limitation of Liability</h2>
+      <p>To the fullest extent permitted by law, LegendPrix AI shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of or inability to use the App, including loss of data, loss of gameplay progress, or any unauthorised access to your device. Our total liability shall not exceed the amount you paid for DotMesh Pro in the 12 months preceding the claim.</p>
+    </section>
+
+    <section>
+      <h2>Third-Party Services</h2>
+      <p>DotMesh uses third-party services including RevenueCat (subscription management), Google AdMob (advertising for free users), Firebase (multiplayer infrastructure), and Expo/EAS (app delivery). Your use of these services is also subject to their respective terms and privacy policies. We are not responsible for the practices of these third-party providers.</p>
+    </section>
+
+    <section>
+      <h2>Children</h2>
+      <p>DotMesh is a casual game suitable for all ages. We do not knowingly allow children under 13 to make in-app purchases without parental consent. Parents and guardians are responsible for managing in-app purchase settings on their child's device. If you believe a child has made an unauthorised purchase, contact Apple Support or Google Play Support directly.</p>
+    </section>
+
+    <section>
+      <h2>Termination</h2>
+      <p>We reserve the right to suspend or terminate your access to DotMesh at our sole discretion, without notice, if you violate these Terms. Upon termination, your licence to use the App ceases immediately. Provisions regarding intellectual property, liability, and governing law survive termination.</p>
+    </section>
+
+    <section>
+      <h2>Governing Law</h2>
+      <p>These Terms of Use are governed by and construed in accordance with the laws of India. Any disputes arising from these Terms or your use of DotMesh shall be subject to the exclusive jurisdiction of the courts of India.</p>
+    </section>
+
+    <section>
+      <h2>Contact Us</h2>
+      <p>If you have any questions about these Terms of Use, please contact us:</p>
+      <div class="highlight">
+        📧 <a href="mailto:legendprixai@gmail.com">legendprixai@gmail.com</a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-dots">
+        <div class="footer-dot" style="background:#4FD8FF;box-shadow:0 0 6px #4FD8FF;"></div>
+        <div class="footer-dot" style="background:#F472B6;box-shadow:0 0 6px #F472B6;"></div>
+        <div class="footer-dot" style="background:#4FD8FF;box-shadow:0 0 6px #4FD8FF;"></div>
+      </div>
+      <p>&copy; 2026 LegendPrix AI. All rights reserved.</p>
+      <p style="margin-top:8px;">
+        <a href="../privacy/">Privacy Policy</a>
+        &nbsp;·&nbsp;
+        <a href="../support/">Support</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:legendprixai@gmail.com">Contact Us</a>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

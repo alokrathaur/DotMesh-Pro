@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support — DotMesh: Dots &amp; Boxes Game</title>
+  <meta name="description" content="Get help with DotMesh: Dots & Boxes Game. FAQs, troubleshooting, and contact support." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0B0B14;
+      --card:     #16161F;
+      --card-alt: #1C1C2A;
+      --border:   #242434;
+      --cyan:     #4FD8FF;
+      --pink:     #F472B6;
+      --gold:     #FBBF24;
+      --green:    #4ADE80;
+      --text-pri: #FFFFFF;
+      --text-sec: #8B8FA8;
+      --radius:   14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-pri);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(79,216,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,216,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: -200px;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(79,216,255,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-pink {
+      position: fixed;
+      bottom: -200px;
+      right: -200px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(244,114,182,0.05) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 48px 0 40px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 10px var(--cyan);
+    }
+    .logo-dot.pink { background: var(--pink); box-shadow: 0 0 10px var(--pink); }
+
+    .app-name {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: var(--cyan);
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .header-sub {
+      font-size: 15px;
+      color: var(--text-sec);
+    }
+
+    /* ── Contact card ── */
+    .contact-card {
+      background: linear-gradient(135deg, rgba(79,216,255,0.08), rgba(244,114,182,0.05));
+      border: 1px solid rgba(79,216,255,0.25);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .contact-card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .contact-card p {
+      color: var(--text-sec);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .email-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--cyan);
+      color: #0B0B14;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 12px 28px;
+      border-radius: 40px;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.15s;
+      letter-spacing: 0.02em;
+    }
+
+    .email-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    .response-badge {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--green);
+      background: rgba(74,222,128,0.08);
+      border: 1px solid rgba(74,222,128,0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* ── Section ── */
+    section {
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      margin-bottom: 14px;
+      padding-left: 4px;
+    }
+
+    /* ── FAQ accordion ── */
+    .faq-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .faq-item:hover { border-color: rgba(79,216,255,0.2); }
+
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      text-align: left;
+      color: var(--text-pri);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+    }
+
+    .faq-q:focus-visible { outline: 2px solid var(--cyan); outline-offset: -2px; }
+
+    .faq-icon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(79,216,255,0.1);
+      border: 1px solid rgba(79,216,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--cyan);
+      transition: transform 0.25s, background 0.2s;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      background: rgba(79,216,255,0.18);
+    }
+
+    .faq-a {
+      display: none;
+      padding: 0 20px 18px;
+      color: #C4C8DC;
+      font-size: 14px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+
+    .faq-item.open .faq-a { display: block; }
+
+    .faq-a a { color: var(--cyan); }
+    .faq-a a:hover { text-decoration: underline; }
+
+    /* ── Quick tips grid ── */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .tip-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      transition: border-color 0.2s;
+    }
+
+    .tip-card:hover { border-color: rgba(79,216,255,0.2); }
+
+    .tip-icon {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .tip-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .tip-card p {
+      font-size: 13px;
+      color: var(--text-sec);
+      line-height: 1.5;
+    }
+
+    /* ── Pro section ── */
+    .pro-card {
+      background: linear-gradient(135deg, rgba(168,85,247,0.08), rgba(244,114,182,0.06));
+      border: 1px solid rgba(168,85,247,0.25);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+    }
+
+    .pro-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(251,191,36,0.1);
+      border: 1px solid rgba(251,191,36,0.25);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .pro-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .pro-card p { font-size: 14px; color: #C4C8DC; margin-bottom: 10px; }
+    .pro-card p:last-child { margin-bottom: 0; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding-top: 48px;
+      font-size: 13px;
+      color: var(--text-sec);
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+    }
+
+    footer a { color: var(--text-sec); }
+    footer a:hover { color: var(--cyan); }
+
+    .footer-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .footer-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 560px) {
+      .contact-card, .pro-card { padding: 20px 18px; }
+      .faq-q { padding: 16px; }
+      .faq-a { padding: 12px 16px 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-pink"></div>
+
+  <div class="wrapper">
+    <header>
+      <div class="logo-row">
+        <div class="logo-dot"></div>
+        <span class="app-name">DotMesh</span>
+        <div class="logo-dot pink"></div>
+      </div>
+      <h1>Support</h1>
+      <p class="header-sub">We're here to help — usually within 24 hours.</p>
+    </header>
+
+    <!-- Contact card -->
+    <div class="contact-card">
+      <h2>Get in Touch</h2>
+      <p>Have a bug, question, or feedback? Send us an email and we'll get back to you.</p>
+      <a class="email-btn" href="mailto:legendprixai@gmail.com">
+        ✉️ &nbsp;legendprixai@gmail.com
+      </a>
+      <br />
+      <span class="response-badge">⚡ Typical response: within 24 hours</span>
+    </div>
+
+    <!-- FAQs -->
+    <section>
+      <p class="section-title">Frequently Asked Questions</p>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          How do I play online with a friend?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Tap <strong>Online</strong> on the home screen. One player creates a room and shares the 6-character room code. The other player taps <strong>Join Room</strong> and enters the code. No account or login required — the match starts instantly.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          My DotMesh Pro purchase isn't showing — what do I do?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Go to <strong>Settings → Restore Purchases</strong> inside the app. This syncs your subscription status. If the issue persists, make sure you're signed in to the same Apple ID or Google account used to purchase, then try restoring again. Contact us at <a href="mailto:legendprixai@gmail.com">legendprixai@gmail.com</a> if it still doesn't resolve.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          How do I cancel my DotMesh Pro subscription?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Subscriptions are managed by the App Store or Google Play — not inside the app.<br/><br/>
+          <strong>iOS:</strong> Settings → [Your Name] → Subscriptions → DotMesh Pro → Cancel.<br/>
+          <strong>Android:</strong> Google Play → Profile → Payments & subscriptions → Subscriptions → DotMesh Pro → Cancel.<br/><br/>
+          Your Pro access continues until the end of the current billing period.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          Can I play without an internet connection?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Yes. <strong>Local 2-Player</strong> (same device, pass-and-play) and <strong>vs AI Bot</strong> modes work completely offline. Online Multiplayer requires an internet connection.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          How do I change themes or player colours?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Tap the ⚙️ settings icon on the home screen. Free players get Classic Blue theme and 4 player colours. <strong>DotMesh Pro</strong> unlocks all 10 themes and 12 player colour options.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          The app crashed or a bug appeared — how do I report it?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          Email <a href="mailto:legendprixai@gmail.com">legendprixai@gmail.com</a> with a description of what happened, your device model, and iOS/Android version. Screenshots or screen recordings help us fix it faster. We aim to address critical bugs in the next update.
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false">
+          What is the 7-day free trial?
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          New subscribers get 7 days of DotMesh Pro free. You won't be charged until the trial ends. Cancel any time before the 7 days are up to avoid being billed. After the trial, billing continues monthly ($0.99/month) or yearly ($4.99/year) depending on your chosen plan.
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick tips -->
+    <section>
+      <p class="section-title">Quick Tips</p>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <div class="tip-icon">🎯</div>
+          <h3>Chain Boxes</h3>
+          <p>Closing one box often lets you continue — plan chains to dominate the board.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🤖</div>
+          <h3>Practice vs AI</h3>
+          <p>Start on Easy, then move to Hard to sharpen your strategy before playing online.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">📱</div>
+          <h3>Local Mode</h3>
+          <p>Pass the phone between turns — great for playing with someone next to you.</p>
+        </div>
+        <div class="tip-card">
+          <div class="tip-icon">🎨</div>
+          <h3>Pick Your Colour</h3>
+          <p>Customise your player colour in Settings before each game to stand out.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pro section -->
+    <section>
+      <p class="section-title">DotMesh Pro</p>
+      <div class="pro-card">
+        <span class="pro-badge">⭐ Pro</span>
+        <h3>Subscription Support</h3>
+        <p>DotMesh Pro is billed at <strong>$0.99/month</strong> or <strong>$4.99/year</strong> (save 58%) with a <strong>7-day free trial</strong>. Subscriptions renew automatically and can be cancelled at any time via your device's subscription settings.</p>
+        <p>For billing issues, refund requests, or subscription questions, contact us at <a href="mailto:legendprixai@gmail.com" style="color:var(--cyan)">legendprixai@gmail.com</a> — we respond within 24 hours.</p>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-dots">
+        <div class="footer-dot" style="background:#4FD8FF;box-shadow:0 0 6px #4FD8FF;"></div>
+        <div class="footer-dot" style="background:#F472B6;box-shadow:0 0 6px #F472B6;"></div>
+        <div class="footer-dot" style="background:#4FD8FF;box-shadow:0 0 6px #4FD8FF;"></div>
+      </div>
+      <p>&copy; 2026 LegendPrix AI. All rights reserved.</p>
+      <p style="margin-top:8px;">
+        <a href="../privacy/">Privacy Policy</a>
+        &nbsp;·&nbsp;
+        <a href="mailto:legendprixai@gmail.com">Email Support</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        // Close all
+        document.querySelectorAll('.faq-item.open').forEach(el => {
+          el.classList.remove('open');
+          el.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+        });
+        // Toggle clicked
+        if (!isOpen) {
+          item.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

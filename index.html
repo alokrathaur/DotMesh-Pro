@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DotMesh — Dots & Boxes reimagined. Play locally with friends, challenge an AI bot, or battle opponents online in real time.">
+  <meta name="theme-color" content="#0B0B14">
+  <title>DotMesh — Dots &amp; Boxes Game</title>
+  <link rel="icon" href="images/favicon.png">
+
+  <!-- Fonts: Barlow Condensed (display) + Figtree (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    img  { display: block; max-width: 100%; }
+    a    { color: inherit; text-decoration: none; }
+
+    /* ─── Tokens ─────────────────────────────────────────── */
+    :root {
+      --bg:          oklch(8.5% 0.018 245);
+      --surface:     oklch(11.5% 0.018 245);
+      --surface-up:  oklch(15%   0.016 245);
+      --border:      oklch(24%   0.016 245);
+      --border-soft: oklch(18%   0.016 245);
+
+      --text-pri: oklch(96%  0.006 245);
+      --text-sec: oklch(58%  0.022 245);
+
+      --cyan:      #00D4FF;
+      --cyan-dim:  oklch(79% 0.14 198 / 0.11);
+      --cyan-glow: oklch(79% 0.14 198 / 0.25);
+      --magenta:   #FF2D97;
+      --mag-dim:   oklch(63% 0.25 322 / 0.11);
+
+      /* 4pt spacing scale */
+      --s-xs:  4px;
+      --s-sm:  8px;
+      --s-md: 16px;
+      --s-lg: 24px;
+      --s-xl: 32px;
+      --s-2x: 48px;
+      --s-3x: 64px;
+      --s-4x: 96px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-pri);
+      font-family: 'Figtree', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ─── Type helpers ───────────────────────────────────── */
+    .display {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      line-height: 0.93;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+    }
+
+    .label-text {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+    }
+
+    /* ─── Layout ─────────────────────────────────────────── */
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 var(--s-xl);
+    }
+
+    /* ─── Nav ────────────────────────────────────────────── */
+    nav.site-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      padding: var(--s-md) 0;
+      background: oklch(8.5% 0.018 245 / 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 var(--s-xl);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      text-decoration: none;
+    }
+
+    .nav-logo img {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .nav-logo-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .nav-logo-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      line-height: 1;
+      color: var(--text-pri);
+    }
+
+    .nav-logo-sub {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 10px;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      line-height: 1;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--s-md);
+    }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      padding: 9px 18px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-ghost:hover { border-color: var(--text-sec); color: var(--text-pri); }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--s-sm);
+      padding: 10px 20px;
+      background: var(--cyan);
+      color: oklch(8% 0.018 245);
+      border-radius: 6px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      transition: opacity 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.85; }
+
+    /* ─── Hero ───────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px;
+      overflow: hidden;
+    }
+
+    #dot-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-4x);
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: var(--s-lg);
+    }
+
+    .eyebrow-pip {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+
+    .hero-h1 {
+      font-size: clamp(68px, 9vw, 120px);
+      margin-bottom: var(--s-xl);
+    }
+
+    .hero-h1 .hi { color: var(--cyan); }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--text-sec);
+      line-height: 1.65;
+      max-width: 50ch;
+      margin-bottom: var(--s-2x);
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s-md);
+    }
+
+    .store-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      padding: 12px 20px;
+      background: var(--surface-up);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .store-badge:hover {
+      background: oklch(18% 0.016 245);
+      border-color: oklch(32% 0.016 245);
+    }
+
+    .store-badge-icon {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      flex-shrink: 0;
+      display: block;
+      mix-blend-mode: screen;
+    }
+
+    .store-badge-icon-text {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .store-badge-label {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .store-badge-sub {
+      font-size: 10px;
+      color: var(--text-sec);
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .store-badge-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: 0.02em;
+      line-height: 1;
+    }
+
+    /* Phone frames */
+    .phones-cluster {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      position: relative;
+      height: 560px;
+    }
+
+    .phone {
+      position: absolute;
+      background: oklch(12% 0.015 245);
+      border-radius: 38px;
+      border: 2px solid oklch(26% 0.02 245);
+      overflow: hidden;
+      box-shadow:
+        0 48px 96px oklch(0% 0 0 / 0.55),
+        0 0 0 1px oklch(14% 0.015 245);
+    }
+
+    .phone::after {
+      content: '';
+      position: absolute;
+      top: 9px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70px;
+      height: 20px;
+      background: oklch(12% 0.015 245);
+      border-radius: 0 0 14px 14px;
+      z-index: 10;
+    }
+
+    .phone img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .phone-a {
+      width: 224px;
+      height: 486px;
+      bottom: 0;
+      right: 60px;
+      z-index: 2;
+      transform: rotate(-2.5deg);
+    }
+
+    .phone-b {
+      width: 194px;
+      height: 420px;
+      bottom: 20px;
+      left: 30px;
+      z-index: 1;
+      transform: rotate(3.5deg);
+      opacity: 0.65;
+      border-color: oklch(22% 0.018 245);
+    }
+
+    /* ─── Stats strip ────────────────────────────────────── */
+    .stats-strip {
+      display: flex;
+      gap: var(--s-4x);
+      padding: var(--s-3x) 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: var(--s-4x) 0 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .stats-strip::-webkit-scrollbar { display: none; }
+
+    .stat {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-xs);
+    }
+
+    .stat-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 52px;
+      line-height: 1;
+      color: var(--cyan);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-sec);
+    }
+
+    /* ─── Section base ───────────────────────────────────── */
+    section { padding: var(--s-4x) 0; }
+
+    .section-kicker {
+      margin-bottom: var(--s-lg);
+    }
+
+    .section-h2 {
+      font-size: clamp(40px, 6vw, 72px);
+      margin-top: var(--s-sm);
+    }
+
+    /* ─── Game modes ─────────────────────────────────────── */
+    .mode-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-4x);
+      align-items: center;
+      padding: var(--s-4x) 0;
+    }
+
+    .mode-block + .mode-block {
+      border-top: 1px solid var(--border);
+    }
+
+    .mode-screens-left .mode-screens { order: -1; }
+
+    .mode-content {
+      position: relative;
+    }
+
+    .mode-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 140px;
+      line-height: 1;
+      color: var(--text-pri);
+      opacity: 0.035;
+      position: absolute;
+      top: -24px;
+      left: -8px;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .mode-h3 {
+      font-size: clamp(36px, 5vw, 58px);
+      margin: var(--s-md) 0 var(--s-lg);
+    }
+
+    .mode-desc {
+      font-size: 17px;
+      color: var(--text-sec);
+      line-height: 1.7;
+      max-width: 48ch;
+      margin-bottom: var(--s-xl);
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--s-sm);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 13px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-sec);
+    }
+
+    .pill-hi {
+      background: var(--cyan-dim);
+      border-color: oklch(79% 0.14 198 / 0.28);
+      color: var(--cyan);
+    }
+
+    .mode-screens {
+      display: flex;
+      gap: var(--s-md);
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .mode-screens .phone {
+      position: relative !important;
+      width: 200px;
+      height: 432px;
+    }
+
+    .mode-screens .phone:nth-child(2) {
+      width: 172px;
+      height: 372px;
+      opacity: 0.7;
+      border-color: oklch(22% 0.018 245);
+    }
+
+    /* ─── Full-width single screenshot ──────────────────── */
+    .single-phone {
+      position: relative !important;
+      width: 200px;
+      height: 432px;
+      margin: 0 auto;
+    }
+
+    /* ─── Screenshots gallery ────────────────────────────── */
+    .gallery-section {
+      padding: var(--s-4x) 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .gallery-scroll {
+      margin-top: var(--s-3x);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scroll-snap-type: x mandatory;
+      padding: var(--s-md) var(--s-xl) var(--s-lg);
+      display: flex;
+      gap: var(--s-xl);
+    }
+
+    .gallery-scroll::-webkit-scrollbar { display: none; }
+
+    .gallery-item {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-md);
+      align-items: center;
+    }
+
+    .gallery-item .phone {
+      position: relative !important;
+      width: 170px;
+      height: 368px;
+    }
+
+    .gallery-cap {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      text-align: center;
+    }
+
+    /* ─── Themes grid ────────────────────────────────────── */
+    .themes-section {
+      border-top: 1px solid var(--border);
+    }
+
+    .themes-intro {
+      font-size: 17px;
+      color: var(--text-sec);
+      max-width: 52ch;
+      margin-top: var(--s-lg);
+      line-height: 1.65;
+    }
+
+    .themes-grid {
+      margin-top: var(--s-3x);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: var(--s-md);
+    }
+
+    .theme-tile {
+      padding: var(--s-lg);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-md);
+      transition: border-color 0.2s;
+    }
+
+    .theme-tile:hover { border-color: oklch(34% 0.016 245); }
+
+    .theme-swatches {
+      display: flex;
+      gap: 8px;
+    }
+
+    .swatch {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .theme-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .tier-badge {
+      align-self: flex-start;
+      padding: 3px 9px;
+      border-radius: 100px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .tier-free {
+      background: var(--cyan-dim);
+      border: 1px solid oklch(79% 0.14 198 / 0.26);
+      color: var(--cyan);
+    }
+
+    .tier-pro {
+      background: var(--mag-dim);
+      border: 1px solid oklch(63% 0.25 322 / 0.24);
+      color: var(--magenta);
+    }
+
+    /* ─── Pro CTA ────────────────────────────────────────── */
+    .pro-section {
+      border-top: 1px solid var(--border);
+    }
+
+    .pro-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-4x);
+      align-items: start;
+    }
+
+    .pro-heading {
+      font-size: clamp(40px, 6vw, 72px);
+      margin: var(--s-md) 0 var(--s-lg);
+    }
+
+    .pro-sub {
+      font-size: 17px;
+      color: var(--text-sec);
+      max-width: 46ch;
+      line-height: 1.65;
+      margin-bottom: var(--s-2x);
+    }
+
+    .pro-ctas {
+      display: flex;
+      gap: var(--s-md);
+      flex-wrap: wrap;
+    }
+
+    .btn-pro {
+      display: inline-flex;
+      align-items: center;
+      padding: 14px 28px;
+      background: var(--cyan);
+      color: oklch(8% 0.018 245);
+      border-radius: 8px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: opacity 0.15s;
+    }
+
+    .btn-pro:hover { opacity: 0.85; }
+
+    .btn-pro-ghost {
+      display: inline-flex;
+      align-items: center;
+      padding: 14px 28px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-sec);
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .btn-pro-ghost:hover { border-color: var(--text-sec); color: var(--text-pri); }
+
+    .pro-perks {
+      display: flex;
+      flex-direction: column;
+      gap: var(--s-xl);
+      padding-top: var(--s-xl);
+    }
+
+    .perk {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--s-md);
+    }
+
+    .perk-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--surface-up);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .perk-body h4 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .perk-body p {
+      font-size: 14px;
+      color: var(--text-sec);
+      line-height: 1.55;
+    }
+
+    /* ─── Footer ─────────────────────────────────────────── */
+    footer {
+      padding: var(--s-xl) 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--s-xl);
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: var(--s-lg);
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-sec);
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--text-pri); }
+
+    .footer-links-sep {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: oklch(40% 0.016 245);
+    }
+
+    @media (max-width: 600px) {
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ─── Entrance animations ────────────────────────────── */
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .rise { opacity: 0; animation: rise 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+    .d1 { animation-delay: 0.08s; }
+    .d2 { animation-delay: 0.18s; }
+    .d3 { animation-delay: 0.28s; }
+    .d4 { animation-delay: 0.40s; }
+    .d5 { animation-delay: 0.52s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rise { animation: none; opacity: 1; }
+    }
+
+    /* ─── Responsive ─────────────────────────────────────── */
+    @media (max-width: 800px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        text-align: left;
+        gap: var(--s-3x);
+      }
+
+      .phones-cluster {
+        height: 380px;
+        margin-top: var(--s-lg);
+      }
+
+      .phone-a { width: 180px; height: 390px; right: 30px; }
+      .phone-b { width: 155px; height: 335px; left: 20px; }
+
+      .mode-block {
+        grid-template-columns: 1fr;
+        gap: var(--s-2x);
+      }
+
+      .mode-screens-left .mode-screens { order: unset; }
+
+      .mode-screens { order: -1; }
+
+      .mode-num { font-size: 96px; }
+
+      .pro-inner {
+        grid-template-columns: 1fr;
+        gap: var(--s-3x);
+      }
+
+      .stats-strip { gap: var(--s-2x); }
+
+      .nav-actions .btn-ghost { display: none; }
+    }
+
+    @media (max-width: 480px) {
+      .wrap { padding: 0 var(--s-lg); }
+
+      .theme-tile { padding: var(--s-md); }
+
+      .store-badge { padding: 10px 16px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────── -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a class="nav-logo" href="/">
+        <img src="images/dotmesh-logo.png" alt="DotMesh icon">
+        <span class="nav-logo-text">
+          <span class="nav-logo-name">DotMesh</span>
+          <span class="nav-logo-sub">Dots &amp; Boxes Game</span>
+        </span>
+      </a>
+      <div class="nav-actions">
+        <a class="btn-ghost" href="#features">Features</a>
+        <a class="btn-primary" href="#download">Download Free</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ────────────────────────────────────────────── -->
+  <section class="hero">
+    <canvas id="dot-canvas" aria-hidden="true"></canvas>
+
+    <div class="wrap" style="width:100%">
+      <div class="hero-inner">
+
+        <div class="hero-copy">
+          <div class="hero-eyebrow rise d1">
+            <span class="eyebrow-pip" aria-hidden="true"></span>
+            <span class="label-text">Strategy · Speed · Skill</span>
+          </div>
+
+          <h1 class="display hero-h1 rise d2">
+            Connect.<br>
+            Capture.<br>
+            <span class="hi">Dominate.</span>
+          </h1>
+
+          <p class="hero-sub rise d3">
+            Dots &amp; Boxes, rebuilt for competition. Play friends on the same device, take on an AI opponent, or battle anyone in the world — all in real time.
+          </p>
+
+          <div class="hero-badges rise d4">
+            <a class="store-badge" href="#download" aria-label="Download on the App Store">
+              <img class="store-badge-icon" src="images/applelogo.png" alt="" aria-hidden="true">
+              <span class="store-badge-label">
+                <span class="store-badge-sub">Download on the</span>
+                <span class="store-badge-name">App Store</span>
+              </span>
+            </a>
+            <a class="store-badge" href="#download" aria-label="Get it on Google Play">
+              <span class="store-badge-icon-text" aria-hidden="true">▶</span>
+              <span class="store-badge-label">
+                <span class="store-badge-sub">Get it on</span>
+                <span class="store-badge-name">Google Play</span>
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <div class="phones-cluster rise d3" aria-hidden="true">
+          <div class="phone phone-b">
+            <img src="images/3.localPlayer.jpg" alt="Local multiplayer game in progress" loading="lazy">
+          </div>
+          <div class="phone phone-a">
+            <img src="images/1.home.jpg" alt="DotMesh home screen">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="stats-strip rise d5">
+        <div class="stat"><span class="stat-num">3</span><span class="stat-label">Game modes</span></div>
+        <div class="stat"><span class="stat-num">10</span><span class="stat-label">Visual themes</span></div>
+        <div class="stat"><span class="stat-num">4</span><span class="stat-label">Players per match</span></div>
+        <div class="stat"><span class="stat-num">12</span><span class="stat-label">Player colors</span></div>
+        <div class="stat"><span class="stat-num">3</span><span class="stat-label">AI difficulty levels</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GAME MODES ───────────────────────────────────────── -->
+  <section id="features">
+    <div class="wrap">
+      <div class="section-kicker">
+        <span class="label-text">How you play</span>
+        <h2 class="display section-h2">Three ways<br>to compete</h2>
+      </div>
+
+      <!-- 01 — Local Multiplayer -->
+      <div class="mode-block">
+        <div class="mode-content">
+          <span class="mode-num" aria-hidden="true">01</span>
+          <span class="label-text">Local Multiplayer</span>
+          <h3 class="display mode-h3">2–4 players,<br>one device</h3>
+          <p class="mode-desc">
+            Pass and play on a single phone or tablet. Up to four players take turns drawing lines — claim a box on all four sides and it's yours. First to capture the most boxes wins. Fast, tactical, and no internet required.
+          </p>
+          <p class="mode-desc" style="margin-top: -8px;">
+            Each player sets their name, picks an emoji avatar, and chooses from 12 color options (6 free, 6 Pro). The scoreboard updates live as boxes are captured, with a pulse indicator showing whose turn it is. Ties are handled gracefully with a dedicated result screen.
+          </p>
+          <div class="pills">
+            <span class="pill pill-hi">2–4 players</span>
+            <span class="pill">Custom names &amp; emojis</span>
+            <span class="pill">12 color options</span>
+            <span class="pill">Live scoreboard</span>
+            <span class="pill">Tie resolution</span>
+            <span class="pill">No internet needed</span>
+          </div>
+        </div>
+        <div class="mode-screens">
+          <div class="phone">
+            <img src="images/3.localPlayer.jpg" alt="Local multiplayer — game in progress" loading="lazy">
+          </div>
+          <div class="phone">
+            <img src="images/4.PlayerTie.jpg" alt="Local multiplayer — tie result screen" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 — Bot Play -->
+      <div class="mode-block mode-screens-left">
+        <div class="mode-content">
+          <span class="mode-num" aria-hidden="true">02</span>
+          <span class="label-text">Bot Play</span>
+          <h3 class="display mode-h3">Challenge<br>the machine</h3>
+          <p class="mode-desc">
+            Three difficulty levels — Easy, Medium, and Hard. The AI reads the board and responds accordingly: Easy lets you practice openings, Medium forces deliberate play, and Hard applies real strategic pressure with chain control.
+          </p>
+          <p class="mode-desc" style="margin-top: -8px;">
+            Perfect for solo sessions, learning the game, or warming up before online play. The bot takes its turn instantly — no waiting, no drop-off risk. Jump in and out whenever.
+          </p>
+          <div class="pills">
+            <span class="pill pill-hi">Easy / Medium / Hard</span>
+            <span class="pill">Adaptive AI strategy</span>
+            <span class="pill">Instant turns</span>
+            <span class="pill">Solo anytime</span>
+            <span class="pill">No account needed</span>
+          </div>
+        </div>
+        <div class="mode-screens">
+          <div class="phone">
+            <img src="images/5.BotPlay.jpg" alt="Bot play — game in progress against AI" loading="lazy">
+          </div>
+          <div class="phone">
+            <img src="images/6.BotWin.jpg" alt="Bot play — result screen" loading="lazy">
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 — Online Play -->
+      <div class="mode-block">
+        <div class="mode-content">
+          <span class="mode-num" aria-hidden="true">03</span>
+          <span class="label-text">Online Multiplayer</span>
+          <h3 class="display mode-h3">Play live,<br>anywhere</h3>
+          <p class="mode-desc">
+            Create a room and share a 6-character invite code. Your opponent joins on their device — anywhere in the world. Moves sync instantly via Firebase Realtime: you see their line appear the moment they draw it.
+          </p>
+          <p class="mode-desc" style="margin-top: -8px;">
+            Both players see the same live board with their respective color highlights. The game starts the moment both players are in the room. No lobbies, no bots filling empty slots — just two people, competing.
+          </p>
+          <div class="pills">
+            <span class="pill pill-hi">Real-time sync</span>
+            <span class="pill">Room code invite</span>
+            <span class="pill">Share via any app</span>
+            <span class="pill">Global matchmaking</span>
+            <span class="pill">Firebase powered</span>
+            <span class="pill">Low latency</span>
+          </div>
+        </div>
+        <div class="mode-screens">
+          <div class="phone">
+            <img src="images/8.InviteCode.jpg" alt="Online multiplayer — invite code screen" loading="lazy">
+          </div>
+          <div class="phone">
+            <img src="images/9.LiveOnlinePlay.jpg" alt="Online multiplayer — live game" loading="lazy">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GAME SETUP DETAIL ─────────────────────────────────── -->
+  <section style="border-top: 1px solid var(--border);">
+    <div class="wrap">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-4x); align-items: center;">
+        <div class="single-phone phone">
+          <img src="images/2.gameSetup.jpg" alt="Game setup screen — choose players and colors" loading="lazy">
+        </div>
+        <div>
+          <span class="label-text">Before you play</span>
+          <h2 class="display section-h2" style="margin-top: var(--s-sm);">Set up<br>your match</h2>
+          <p style="font-size: 17px; color: var(--text-sec); line-height: 1.7; max-width: 46ch; margin-top: var(--s-lg);">
+            Every match starts with a quick setup screen. Choose the number of players, assign custom names and emoji avatars, pick player colors, and select the board size. Each player's color runs through the entire game — on their lines, their captured boxes, and the scoreboard.
+          </p>
+          <div class="pills" style="margin-top: var(--s-xl);">
+            <span class="pill pill-hi">Custom player setup</span>
+            <span class="pill">Board size selection</span>
+            <span class="pill">Sound &amp; haptics toggle</span>
+            <span class="pill">Theme preview</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SCREENSHOTS GALLERY ───────────────────────────────── -->
+  <section class="gallery-section">
+    <div class="wrap">
+      <span class="label-text">All screens</span>
+      <h2 class="display section-h2" style="margin-top: var(--s-sm);">Every screen,<br>considered</h2>
+    </div>
+    <div class="gallery-scroll" role="region" aria-label="Screenshot gallery">
+      <div class="gallery-item">
+        <div class="phone"><img src="images/1.home.jpg" alt="Home screen" loading="lazy"></div>
+        <span class="gallery-cap">Home</span>
+      </div>
+      <div class="gallery-item">
+        <div class="phone"><img src="images/2.gameSetup.jpg" alt="Game setup" loading="lazy"></div>
+        <span class="gallery-cap">Setup</span>
+      </div>
+      <div class="gallery-item">
+        <div class="phone"><img src="images/3.localPlayer.jpg" alt="Local play" loading="lazy"></div>
+        <span class="gallery-cap">Local Play</span>
+      </div>
+      <div class="gallery-item">
+        <div class="phone"><img src="images/4.PlayerTie.jpg" alt="Tie result" loading="lazy"></div>
+        <span class="gallery-cap">Tie Result</span>
+      </div>
+      <div class="gallery-item">
+        <div class="phone"><img src="images/5.BotPlay.jpg" alt="vs AI bot" loading="lazy"></div>
+        <span class="gallery-cap">vs AI Bot</span>
+      </div>
+      <div class="gallery-item">
+        <div class="phone"><img src="images/6.BotWin.jpg" alt="Bot win result" loading="lazy"></div>
+        <span class="gallery-cap">Result</span>
+      </div>
+      <div class="gallery-item">
+        <div class="phone"><img src="images/7.OnlinePlay.jpg" alt="Online setup" loading="lazy"></div>
+        <span class="gallery-cap">Online Setup</span>
+      </div>
+      <div class="gallery-item">
+        <div class="phone"><img src="images/8.InviteCode.jpg" alt="Invite code" loading="lazy"></div>
+        <span class="gallery-cap">Invite Code</span>
+      </div>
+      <div class="gallery-item">
+        <div class="phone"><img src="images/9.LiveOnlinePlay.jpg" alt="Live online match" loading="lazy"></div>
+        <span class="gallery-cap">Live Match</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── THEMES ────────────────────────────────────────────── -->
+  <section class="themes-section">
+    <div class="wrap">
+      <span class="label-text">Personalize</span>
+      <h2 class="display section-h2" style="margin-top: var(--s-sm);">10 themes,<br>your game</h2>
+      <p class="themes-intro">
+        Each theme rewires the entire visual system — line colors, box fills, board gradients, and score highlights. Two themes are free. Eight unlock with DotMesh Pro.
+      </p>
+      <div class="themes-grid">
+        <div class="theme-tile">
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#00D4FF" title="Electric Cyan"></div>
+            <div class="swatch" style="background:#FF2D97" title="Hot Magenta"></div>
+          </div>
+          <span class="theme-name">Classic</span>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+        <div class="theme-tile">
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#39FF14" title="Laser Green"></div>
+            <div class="swatch" style="background:#FF6400" title="Neon Orange"></div>
+          </div>
+          <span class="theme-name">Neon</span>
+          <span class="tier-badge tier-free">Free</span>
+        </div>
+        <div class="theme-tile">
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#FF1744" title="Vivid Red"></div>
+            <div class="swatch" style="background:#FFB300" title="Solar Gold"></div>
+          </div>
+          <span class="theme-name">Scarlet</span>
+          <span class="tier-badge tier-pro">Pro</span>
+        </div>
+        <div class="theme-tile">
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#9D00FF" title="Deep Violet"></div>
+            <div class="swatch" style="background:#00D4FF" title="Electric Cyan"></div>
+          </div>
+          <span class="theme-name">Violet</span>
+          <span class="tier-badge tier-pro">Pro</span>
+        </div>
+        <div class="theme-tile">
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#FFB300" title="Solar Gold"></div>
+            <div class="swatch" style="background:#FF1744" title="Vivid Red"></div>
+          </div>
+          <span class="theme-name">Amber</span>
+          <span class="tier-badge tier-pro">Pro</span>
+        </div>
+        <div class="theme-tile">
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#2962FF" title="Cobalt Blue"></div>
+            <div class="swatch" style="background:#FF6D00" title="Blaze Orange"></div>
+          </div>
+          <span class="theme-name">Cobalt</span>
+          <span class="tier-badge tier-pro">Pro</span>
+        </div>
+        <div class="theme-tile">
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#FF2D97" title="Hot Magenta"></div>
+            <div class="swatch" style="background:#9D00FF" title="Deep Violet"></div>
+          </div>
+          <span class="theme-name">Rose</span>
+          <span class="tier-badge tier-pro">Pro</span>
+        </div>
+        <div class="theme-tile">
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#00BFA5" title="Ocean Teal"></div>
+            <div class="swatch" style="background:#FF2D97" title="Hot Magenta"></div>
+          </div>
+          <span class="theme-name">Teal</span>
+          <span class="tier-badge tier-pro">Pro</span>
+        </div>
+        <div class="theme-tile">
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#FF6D00" title="Blaze Orange"></div>
+            <div class="swatch" style="background:#2962FF" title="Cobalt Blue"></div>
+          </div>
+          <span class="theme-name">Blaze</span>
+          <span class="tier-badge tier-pro">Pro</span>
+        </div>
+        <div class="theme-tile">
+          <div class="theme-swatches">
+            <div class="swatch" style="background:#00C853" title="Emerald Green"></div>
+            <div class="swatch" style="background:#FF1744" title="Vivid Red"></div>
+          </div>
+          <span class="theme-name">Emerald</span>
+          <span class="tier-badge tier-pro">Pro</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRO CTA ───────────────────────────────────────────── -->
+  <section class="pro-section" id="download">
+    <div class="wrap">
+      <div class="pro-inner">
+        <div>
+          <span class="label-text">DotMesh Pro</span>
+          <h2 class="display pro-heading">Go Pro.<br>Play pure.</h2>
+          <p class="pro-sub">
+            One purchase. No ads — ever. Every theme, every color, every board wallpaper. The game as it was meant to be played.
+          </p>
+          <div class="pro-ctas">
+            <a class="btn-pro" href="#">App Store</a>
+            <a class="btn-pro-ghost" href="#">Google Play</a>
+          </div>
+        </div>
+
+        <div class="pro-perks">
+          <div class="perk">
+            <div class="perk-icon" aria-hidden="true"><img src="images/ads.png" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:6px;"></div>
+            <div class="perk-body">
+              <h4>Zero ads</h4>
+              <p>No banners, no interstitials. Clean gameplay from the moment you open the app.</p>
+            </div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon" aria-hidden="true">🎨</div>
+            <div class="perk-body">
+              <h4>All 10 themes</h4>
+              <p>Unlock Scarlet, Violet, Amber, Cobalt, Rose, Teal, Blaze, and Emerald.</p>
+            </div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon" aria-hidden="true">🎯</div>
+            <div class="perk-body">
+              <h4>All 12 player colors</h4>
+              <p>6 exclusive Pro colors: Digital Lemon, Imperial Sapphire, Ruby Cabernet, Burnished Gold, Emerald Forest, Slate Teal.</p>
+            </div>
+          </div>
+          <div class="perk">
+            <div class="perk-icon" aria-hidden="true">🖼</div>
+            <div class="perk-body">
+              <h4>Board wallpapers</h4>
+              <p>5 custom board backgrounds: Glass, Gold, Energy Blue, Neon Grid, and Deep Space.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ────────────────────────────────────────────── -->
+  <footer>
+    <div class="wrap">
+      <div class="footer-inner">
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="https://alokrathaur.github.io/DotMesh-Pro/privacypolicy" target="_blank" rel="noopener">Privacy Policy</a>
+          <span class="footer-links-sep" aria-hidden="true"></span>
+          <a href="https://alokrathaur.github.io/DotMesh-Pro/termurl" target="_blank" rel="noopener">Terms of Use</a>
+          <span class="footer-links-sep" aria-hidden="true"></span>
+          <a href="mailto:alok08feb@gmail.com">Support</a>
+          <span class="footer-links-sep" aria-hidden="true"></span>
+          <a href="https://docs.google.com/forms/d/1HvAA8EcM3Ht6ZUlQhL_27PJ5NVlTteSyqxK0JAIK-1Y/" target="_blank" rel="noopener">Feedback</a>
+        </nav>
+        <p class="footer-copy">© 2026 LegendPrix AI. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── DOT CANVAS ANIMATION ──────────────────────────────── -->
+  <script>
+    (function () {
+      const canvas = document.getElementById('dot-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const C1 = { r: 0,   g: 212, b: 255 }; // cyan
+      const C2 = { r: 255, g: 45,  b: 151 }; // magenta
+
+      const GRID   = 52;
+      const DOT_R  = 1.8;
+      const LINE_W = 1.4;
+      const LINE_ALPHA_MAX = 0.32;
+      const DOT_ALPHA_BASE = 0.10;
+
+      let W, H, cols, rows, dots = [], lines = [];
+      let lastDraw = 0;
+
+      function resize() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        buildGrid();
+      }
+
+      function buildGrid() {
+        cols = Math.ceil(W / GRID) + 1;
+        rows = Math.ceil(H / GRID) + 1;
+        const ox = (W - (cols - 1) * GRID) / 2;
+        const oy = (H - (rows - 1) * GRID) / 2;
+        dots = [];
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            dots.push({ x: ox + c * GRID, y: oy + r * GRID, r, c, phase: Math.random() * Math.PI * 2 });
+          }
+        }
+        lines = [];
+      }
+
+      function dot(r, c) {
+        return dots[r * cols + c];
+      }
+
+      function spawnLine() {
+        if (lines.length >= 28) return;
+        const horiz = Math.random() < 0.5;
+        const maxR  = horiz ? rows - 1 : rows - 2;
+        const maxC  = horiz ? cols - 2 : cols - 1;
+        const r = Math.floor(Math.random() * maxR);
+        const c = Math.floor(Math.random() * maxC);
+        const key = `${r},${c},${horiz ? 'h' : 'v'}`;
+        if (lines.find(l => l.key === key)) return;
+        const isC1 = Math.random() < 0.55;
+        const col  = isC1 ? C1 : C2;
+        lines.push({
+          key, r, c, horiz,
+          col,
+          prog: 0,
+          born: performance.now(),
+          life: 5000 + Math.random() * 4000
+        });
+      }
+
+      function frame(t) {
+        requestAnimationFrame(frame);
+        ctx.clearRect(0, 0, W, H);
+
+        const dt = t - lastDraw;
+        lastDraw = t;
+
+        if (Math.random() < 0.025) spawnLine();
+
+        /* dots */
+        for (const d of dots) {
+          d.phase += 0.012;
+          const alpha = DOT_ALPHA_BASE + Math.sin(d.phase) * 0.04;
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, DOT_R, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(90,130,165,${alpha.toFixed(3)})`;
+          ctx.fill();
+        }
+
+        /* lines */
+        for (let i = lines.length - 1; i >= 0; i--) {
+          const ln = lines[i];
+          const age = t - ln.born;
+
+          if (ln.prog < 1) ln.prog = Math.min(1, ln.prog + dt * 0.0028);
+
+          const fadeIn  = Math.min(1, ln.prog * 3);
+          const fadeOut = age > ln.life - 800 ? Math.max(0, (ln.life - age) / 800) : 1;
+          const alpha   = LINE_ALPHA_MAX * fadeIn * fadeOut;
+
+          if (age > ln.life) { lines.splice(i, 1); continue; }
+
+          const d1 = dot(ln.r, ln.c);
+          const d2 = ln.horiz ? dot(ln.r, ln.c + 1) : dot(ln.r + 1, ln.c);
+          if (!d1 || !d2) { lines.splice(i, 1); continue; }
+
+          const ex = d1.x + (d2.x - d1.x) * ln.prog;
+          const ey = d1.y + (d2.y - d1.y) * ln.prog;
+
+          ctx.beginPath();
+          ctx.moveTo(d1.x, d1.y);
+          ctx.lineTo(ex, ey);
+          ctx.strokeStyle = `rgba(${ln.col.r},${ln.col.g},${ln.col.b},${alpha.toFixed(3)})`;
+          ctx.lineWidth   = LINE_W;
+          ctx.lineCap     = 'round';
+          ctx.stroke();
+        }
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      requestAnimationFrame(frame);
+    })();
+  </script>
+
+</body>
+</html>
